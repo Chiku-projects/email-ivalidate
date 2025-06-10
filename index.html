@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Email Validation Checker</title>
+  <style>
+   *{
+    padding: 2px;
+    margin: 0;
+    }
+    nav {
+      background-color: black;
+      display: flex;
+      color: antiquewhite;
+      font-size: small;
+      justify-content: space-between;
+    }
+
+    ul {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-right: 60px;
+      list-style-type: none;
+    }
+
+    ul li a {
+      color: blueviolet;
+    }
+
+    ul > li:hover {
+      color: red;
+    }
+
+    h2 {
+      margin-top: 13px;
+      margin-left: 13px;
+      margin-bottom: 13px;
+    }
+
+    label {
+      margin-top: 18px;
+      display: inline-block;
+    }
+
+    #btn {
+      padding: 4px 8px;
+      background-color: black;
+      color: azure;
+      border-radius: 7px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .container {
+      margin-top: 15px;
+    }
+    #results div::first-letter{
+     text-transform: uppercase;
+    }
+    footer {
+      background-color: black;
+      color: antiquewhite;
+      display: flex;
+      justify-content: start;
+      margin-top: 60px;
+      padding: 10px;
+    }
+    
+  </style>
+</head>
+<body>
+  <header>
+    <nav>
+      <h1>Email Validation Checker</h1>
+      <ul>
+        <li><a href="#">home</a></li>
+        <li><a href="#">about</a></li>
+        <li><a href="#">contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <h2>Enter your email to validate:</h2>
+    <form action="/submit">
+      <label for="Emailid">Email ID:</label>
+      <input type="text" id="Emailid" placeholder="Enter your email" /><br />
+      <button id="btn" type="button">Submit</button>
+    </form>
+
+    <div class="container">
+      <h3>Your results:</h3>
+      <div id="results"></div>
+    </div>
+  </main>
+
+  <footer>
+    <p>Thanks for using our site</p>
+  </footer>
+
+  <script>
+  const btn = document.getElementById("btn");
+
+  btn.addEventListener("click", async (e) => {
+    e.preventDefault();
+    console.log("clicked")
+
+    const apiKey = "ema_live_XDsR6GJsN2JfvLSgyAJsGIlEZfrIBmCnwLwt9C41";
+    const email = document.getElementById("Emailid").value.trim();
+    const url = `https://api.emailvalidation.io/v1/info?apikey=${apiKey}&email=${email}`;
+    let res=await fetch(url)
+    let result=await res.json()
+    const resultsDiv = document.getElementById("results");
+    resultsDiv.innerHTML = "<div>Loading...</div>";
+
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+
+      let output = "";
+      for (let field in data) {
+        output += `<div><strong>${field}:</strong> ${data[field]}</div>`;
+      }
+
+      resultsDiv.innerHTML = output;
+    } catch (error) {
+      resultsDiv.innerHTML = `<div style="color:red;"><strong>Error:</strong> ${error.message}</div>`;
+      console.error("API fetch error:", error);
+    }
+  });
+</script>
